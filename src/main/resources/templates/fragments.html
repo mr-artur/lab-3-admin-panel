@@ -1,0 +1,30 @@
+<!-- Head tag | accepts: meta -->
+<head th:fragment="head" xmlns:th="http://www.w3.org/1999/xhtml">
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Meta info depending of page (title, description) -->
+    [(${meta})]
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"/>
+
+    <!--Font 'Jura' -->
+    <link href="https://fonts.googleapis.com/css?family=Jura&display=swap" rel="stylesheet">
+
+    <!-- Font 'Monofett' -->
+    <link href="https://fonts.googleapis.com/css2?family=Monofett&display=swap" rel="stylesheet">
+
+    <!-- Additional styles -->
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+
+<!-- Change language block -->
+<div th:fragment="languages" class="languages" xmlns:th="http://www.w3.org/1999/xhtml">
+    <button type="button" class="btn btn-primary btn-language" value="en">EN</button>
+    <button type="button" class="btn btn-secondary btn-language" value="ua">УКР</button>
+
+    <!-- Change language script -->
+    <script type="text/javascript" src="/js/languageChange.js"></script>
+</div>

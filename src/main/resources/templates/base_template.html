@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="${language}" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="fragments::head(meta=${meta})"></head>
+<body class="bg-light">
+    <th:block th:replace="fragments::languages"/>
+    <div class="header container mb-2">
+        [(${header})]
+    </div>
+    <div class="container my-3">
+        <div>[(${subheader})]</div>
+        <h1 th:text="${title}" class="mb-4"></h1>
+        <img class="img-big" th:src="${imageUrl}">
+        [(${content})]
+    </div>
+    <div class="footer container mt-2">
+        [(${footer})]
+    </div>
+</body>
+</html>
