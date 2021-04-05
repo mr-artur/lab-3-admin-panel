@@ -71,7 +71,7 @@ public class Page implements Serializable {
     @JoinColumn(name = "parent_code", referencedColumnName = "code")
     private Page parentPage;
 
-    @OneToMany(mappedBy = "parentPage")
+    @OneToMany(mappedBy = "parentPage", cascade = CascadeType.ALL)
     private List<Page> childPages = new ArrayList<>();
     /*
      * to determine current page position in parent container
