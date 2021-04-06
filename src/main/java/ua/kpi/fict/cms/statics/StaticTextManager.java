@@ -4,16 +4,10 @@ import ua.kpi.fict.cms.entity.enums.Language;
 
 public class StaticTextManager {
 
-    public static String getProceedText(Language language) {
-        return language == Language.UA
-                ? "Перейти"
-                : "Open";
-    }
-
     public static String getHeaderText(Language language) {
         return language == Language.UA
-                ? "Лаб 2 - Ядро CMS-Системи - Розробка інтелектуальних Web-систем"
-                : "Lab 2 - CMS Core - Development of Intelligent Web Systems";
+                ? "Лаб 3 - Адмін-панель CMS - Розробка інтелектуальних Web-систем"
+                : "Lab 3 - CMS Admin panel - Development of Intelligent Web Systems";
     }
 
     public static String getFooterSignText(Language language) {

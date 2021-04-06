@@ -3,6 +3,7 @@ package ua.kpi.fict.cms.service.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
+import ua.kpi.fict.cms.dto.response.AdminPanelPageDto;
 import ua.kpi.fict.cms.dto.response.PageDto;
 import ua.kpi.fict.cms.entity.Page;
 import ua.kpi.fict.cms.entity.enums.ContainerType;
@@ -158,7 +159,79 @@ public class PageServiceImpl implements PageService {
         );
     }
 
-    private Page findPageByCode(String pageCode) {
+    @Override
+    public List<Page> findChildPages(String parentCode) {
+        return pageRepository.findByParentPageCode(parentCode);
+    }
+
+    @Override
+    public void save(Page page) {
+        pageRepository.save(page);
+    }
+
+    @Override
+    public void update(Page page) {
+        pageRepository.save(page);
+    }
+
+    @Override
+    public void delete(Page page) {
+        pageRepository.delete(page);
+    }
+
+    @Override
+    public AdminPanelPageDto getIndexPage(Language language) {
+        String header = buildHeader(language);
+        String content = buildIndexPageContent(language);
+        String footer = buildFooter(language);
+
+        return AdminPanelPageDto.builder()
+                .header(header)
+                .content(content)
+                .footer(footer)
+                .build();
+    }
+
+    private String buildIndexPageContent(Language language) {
+        return null;
+    }
+
+    @Override
+    public AdminPanelPageDto getCreatePage(Language language) {
+        String header = buildHeader(language);
+        String content = buildCreatePageContent(language);
+        String footer = buildFooter(language);
+
+        return AdminPanelPageDto.builder()
+                .header(header)
+                .content(content)
+                .footer(footer)
+                .build();
+    }
+
+    private String buildCreatePageContent(Language language) {
+        return null;
+    }
+
+    @Override
+    public AdminPanelPageDto getEditPage(Language language) {
+        String header = buildHeader(language);
+        String content = buildEditPageContent(language);
+        String footer = buildFooter(language);
+
+        return AdminPanelPageDto.builder()
+                .header(header)
+                .content(content)
+                .footer(footer)
+                .build();
+    }
+
+    private String buildEditPageContent(Language language) {
+        return null;
+    }
+
+    @Override
+    public Page findPageByCode(String pageCode) {
         return pageRepository.findByCode(pageCode).orElse(new Page());
     }
 }

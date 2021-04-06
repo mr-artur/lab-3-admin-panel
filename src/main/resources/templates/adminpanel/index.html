@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="${language}" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="fragments::head"></head>
+<body class="bg-light">
+    <th:block th:replace="fragments::languages"/>
+    <div class="header container mb-2">
+        [(${header})]
+    </div>
+    <div class="container my-3">
+        [(${content})]
+    </div>
+    <div class="footer container mt-2">
+        [(${footer})]
+    </div>
+</body>
+</html>

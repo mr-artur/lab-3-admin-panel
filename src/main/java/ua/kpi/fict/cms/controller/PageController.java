@@ -58,8 +58,9 @@ public class PageController {
 
     @DeleteMapping(value = "/pages/{pageCode}")
     public String destroy(@RequestParam String pageCode) {
-        Page page = pageService.findPagByCode(pageCode);
+        Page page = pageService.findPageByCode(pageCode);
         log.debug("Request to delete page with code : {}", pageCode);
+        pageService.delete(page);
         return "redirect:/pages/index?deleted&parentCode=" + page.getParentPage().getCode();
     }
 

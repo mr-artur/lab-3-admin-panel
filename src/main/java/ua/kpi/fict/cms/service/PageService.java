@@ -1,5 +1,6 @@
 package ua.kpi.fict.cms.service;
 
+import ua.kpi.fict.cms.dto.response.AdminPanelPageDto;
 import ua.kpi.fict.cms.dto.response.PageDto;
 import ua.kpi.fict.cms.entity.Page;
 import ua.kpi.fict.cms.entity.enums.Language;
@@ -14,9 +15,15 @@ public interface PageService {
 
     void update(Page page);
 
-    void delete(String pageCode);
+    void delete(Page page);
 
-    Page findPagByCode(String pageCode);
+    AdminPanelPageDto getIndexPage(Language language);
+
+    AdminPanelPageDto getCreatePage(Language language);
+
+    AdminPanelPageDto getEditPage(Language language);
+
+    Page findPageByCode(String pageCode);
 
     String purifyPageCode(String pageCode);
 
