@@ -5,6 +5,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import ua.kpi.fict.cms.dto.response.AdminPanelPageDto;
 import ua.kpi.fict.cms.dto.response.PageDto;
+import ua.kpi.fict.cms.entity.MessageType;
 import ua.kpi.fict.cms.entity.Page;
 import ua.kpi.fict.cms.entity.enums.ContainerType;
 import ua.kpi.fict.cms.entity.enums.Language;
@@ -180,7 +181,7 @@ public class PageServiceImpl implements PageService {
     }
 
     @Override
-    public AdminPanelPageDto getIndexPage(Language language) {
+    public AdminPanelPageDto getIndexPage(Language language, MessageType messageType) {
         String header = buildHeader(language);
         String content = buildIndexPageContent(language);
         String footer = buildFooter(language);

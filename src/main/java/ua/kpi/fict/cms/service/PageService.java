@@ -2,6 +2,7 @@ package ua.kpi.fict.cms.service;
 
 import ua.kpi.fict.cms.dto.response.AdminPanelPageDto;
 import ua.kpi.fict.cms.dto.response.PageDto;
+import ua.kpi.fict.cms.entity.MessageType;
 import ua.kpi.fict.cms.entity.Page;
 import ua.kpi.fict.cms.entity.enums.Language;
 
@@ -17,7 +18,7 @@ public interface PageService {
 
     void delete(Page page);
 
-    AdminPanelPageDto getIndexPage(Language language);
+    AdminPanelPageDto getIndexPage(Language language, MessageType messageType);
 
     AdminPanelPageDto getCreatePage(Language language);
 

@@ -5,6 +5,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import ua.kpi.fict.cms.dto.response.AdminPanelPageDto;
 import ua.kpi.fict.cms.dto.response.PageDto;
 import ua.kpi.fict.cms.entity.Page;
 import ua.kpi.fict.cms.entity.enums.Language;
@@ -17,17 +18,17 @@ public class PageController {
 
     private final PageService pageService;
 
-    @GetMapping(value = "/pages", params = {"parentCode"})
+    @GetMapping(value = "/pages", params = {"parentCode", "saved", "updated", "deleted"})
     public String index(@RequestParam String parentCode, Model model) {
         log.info("Request to show pages list for parent code : {}", parentCode);
-        model.addAttribute("pages", pageService.findChildPages(parentCode));
-        return "adminpanel/index";
+        AdminPanelPageDto page = pageService.getIndexPage(Language.UA, null);
+        return "adminpanel_template";
     }
 
     @GetMapping(value = "/pages/create")
     public String create(@ModelAttribute("page") Page page) {
         log.info("Request to get create page");
-        return "adminpanel/create";
+        return "adminpanel_template";
     }
 
     @PostMapping(value = "/pages")
@@ -46,7 +47,7 @@ public class PageController {
     @GetMapping(value = "/pages/{pageCode}/edit")
     public String edit(@ModelAttribute("page") Page page, @RequestParam String pageCode) {
         log.info("Request to get edit page for code : {}", pageCode);
-        return "adminpanel/edit";
+        return "adminpanel_template";
     }
 
     @PutMapping(value = "/pages/{pageCode}")
