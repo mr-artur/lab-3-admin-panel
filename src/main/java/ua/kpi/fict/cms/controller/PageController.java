@@ -21,7 +21,7 @@ public class PageController {
     @GetMapping(value = "/pages", params = {"parentCode", "saved", "updated", "deleted"})
     public String index(@RequestParam String parentCode, Model model) {
         log.info("Request to show pages list for parent code : {}", parentCode);
-        AdminPanelPageDto page = pageService.getIndexPage(Language.UA, null);
+        AdminPanelPageDto page = pageService.getIndexPage(parentCode, Language.UA, null);
         return "adminpanel_template";
     }
 

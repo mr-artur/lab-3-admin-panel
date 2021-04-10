@@ -181,9 +181,9 @@ public class PageServiceImpl implements PageService {
     }
 
     @Override
-    public AdminPanelPageDto getIndexPage(Language language, MessageType messageType) {
+    public AdminPanelPageDto getIndexPage(String parentCode, Language language, MessageType messageType) {
         String header = buildHeader(language);
-        String content = buildIndexPageContent(language);
+        String content = buildIndexPageContent(parentCode, language, messageType);
         String footer = buildFooter(language);
 
         return AdminPanelPageDto.builder()
@@ -193,8 +193,110 @@ public class PageServiceImpl implements PageService {
                 .build();
     }
 
-    private String buildIndexPageContent(Language language) {
-        return null;
+    private String buildIndexPageContent(String parentCode, Language language, MessageType messageType) {
+        StringBuilder builder = new StringBuilder();
+
+        String messageBlock = buildMessageBlock(language, messageType);
+        builder.append(messageBlock);
+
+        String header = buildIndexPageHeader(parentCode, language);
+        builder.append(header);
+
+        String table = buildIndexTable(parentCode, language);
+        builder.append(table);
+
+        return builder.toString();
+    }
+
+    private String buildIndexTable(String parentCode, Language language) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("<table class=\"table-striped table-responsive-lg table-bordered table-sm table-hover shadow rounded\">");
+
+        String header = buildIndexTableHeader(language);
+        builder.append(header);
+
+        String body = buildIndexTableBody(parentCode, language);
+        builder.append(body);
+
+        builder.append("</table>");
+
+        return builder.toString();
+    }
+
+    private String buildIndexTableHeader(Language language) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("<thead>" +
+                "           <tr>");
+
+        builder.append(buildTableHeaderCell("id"));
+        builder.append(buildTableHeaderCell("⟱"));
+        builder.append(buildTableHeaderCell(StaticTextManager.getCaptionEnText(language)));
+        builder.append(buildTableHeaderCell(StaticTextManager.getCaptionUaText(language)));
+        builder.append(buildTableHeaderCell(StaticTextManager.getCodeText(language)));
+        builder.append(buildTableHeaderCell(StaticTextManager.getContainerTypeText(language)));
+        builder.append(buildTableHeaderCell(StaticTextManager.getContentEnText(language)));
+        builder.append(buildTableHeaderCell(StaticTextManager.getContentUaText(language)));
+        builder.append(buildTableHeaderCell(StaticTextManager.getCreationDateText(language)));
+        builder.append(buildTableHeaderCell(StaticTextManager.getImageUrlText(language)));
+        builder.append(buildTableHeaderCell(StaticTextManager.getIntroEnText(language)));
+        builder.append(buildTableHeaderCell(StaticTextManager.getIntroUaText(language)));
+        builder.append(buildTableHeaderCell(StaticTextManager.getOrderNumText(language)));
+        builder.append(buildTableHeaderCell(StaticTextManager.getOrderTypeText(language)));
+        builder.append(buildTableHeaderCell(StaticTextManager.getUpdateDateText(language)));
+        builder.append(buildTableHeaderCell(StaticTextManager.getAliasOfText(language)));
+        builder.append(buildTableHeaderCell(StaticTextManager.getParentCodeText(language)));
+        builder.append(buildTableHeaderCell(StaticTextManager.getShowButtonText(language)));
+        builder.append(buildTableHeaderCell(StaticTextManager.getUpdateButtonText(language)));
+        builder.append(buildTableHeaderCell(StaticTextManager.getDeleteButtonText(language)));
+
+        builder.append("    </tr>" +
+                "      </thead>");
+        return builder.toString();
+    }
+
+    private String buildTableHeaderCell(String text) {
+        return String.format("<th class=\"text-center\">%s</th>", text);
+    }
+
+    private String buildIndexTableBody(String parentCode, Language language) {
+        StringBuilder builder = new StringBuilder();
+
+
+        return builder.toString();
+    }
+
+    private String buildMessageBlock(Language language, MessageType messageType) {
+        if (messageType == null) {
+            return "";
+        }
+        switch (messageType) {
+            case SAVED:
+                return String.format(
+                        "<div class=\"alert alert-success mb-4\">%s</div>",
+                        StaticTextManager.getSuccessfulPageCreationText(language)
+                );
+            case DELETED:
+                return String.format(
+                        "<div class=\"alert alert-success mb-4\">%s</div>",
+                        StaticTextManager.getSuccessfulPageUpdateText(language)
+                );
+            case UPDATED:
+                return String.format(
+                        "<div class=\"alert alert-danger mb-4\">%s</div>",
+                        StaticTextManager.getSuccessfulPageDeletionText(language)
+                );
+            default:
+                return "";
+        }
+    }
+
+    private String buildIndexPageHeader(String parentCode, Language language) {
+        String template = "<h2 class=\"mb-4\">%s</h2>";
+        String text = parentCode != null
+                ? String.format(StaticTextManager.getAdminPanelPageHeaderTemplate(language), parentCode)
+                : StaticTextManager.getAdminPanelRootPageHeader(language);
+
+        return String.format(template, text);
     }
 
     @Override

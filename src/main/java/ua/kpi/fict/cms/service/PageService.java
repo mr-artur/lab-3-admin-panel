@@ -18,7 +18,7 @@ public interface PageService {
 
     void delete(Page page);
 
-    AdminPanelPageDto getIndexPage(Language language, MessageType messageType);
+    AdminPanelPageDto getIndexPage(String parentCode, Language language, MessageType messageType);
 
     AdminPanelPageDto getCreatePage(Language language);
 
