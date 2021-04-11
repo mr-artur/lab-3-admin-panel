@@ -142,6 +142,12 @@ public class StaticTextManager {
                 : "Delete";
     }
 
+    public static String getCreateButtonText(Language language) {
+        return language == Language.UA
+                ? "+ Створити"
+                : "+ Create";
+    }
+
     public static String getHeaderText(Language language) {
         return language == Language.UA
                 ? "Лаб 3 - Адмін-панель CMS - Розробка інтелектуальних Web-систем"

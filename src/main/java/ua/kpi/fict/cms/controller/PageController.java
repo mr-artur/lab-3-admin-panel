@@ -7,6 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ua.kpi.fict.cms.dto.response.AdminPanelPageDto;
 import ua.kpi.fict.cms.dto.response.PageDto;
+import ua.kpi.fict.cms.entity.MessageType;
 import ua.kpi.fict.cms.entity.Page;
 import ua.kpi.fict.cms.entity.enums.Language;
 import ua.kpi.fict.cms.service.PageService;
@@ -16,53 +17,84 @@ import ua.kpi.fict.cms.service.PageService;
 @Controller
 public class PageController {
 
+    private static final String ADMIN_PREFIX = "/admin";
+
     private final PageService pageService;
 
-    @GetMapping(value = "/pages", params = {"parentCode", "saved", "updated", "deleted"})
-    public String index(@RequestParam String parentCode, Model model) {
+    @GetMapping(value = ADMIN_PREFIX + "/pages")
+    public String index(@RequestParam(value = "parentCode", required = false) String parentCode,
+                        @RequestParam(value = "saved",required = false) boolean saved,
+                        @RequestParam(value = "updated",required = false) boolean updated,
+                        @RequestParam(value = "deleted",required = false) boolean deleted,
+                        Model model) {
+
         log.info("Request to show pages list for parent code : {}", parentCode);
-        AdminPanelPageDto page = pageService.getIndexPage(parentCode, Language.UA, null);
+        MessageType messageType = getMessageType(saved, updated, deleted);
+        AdminPanelPageDto page = pageService.getIndexPage(parentCode, Language.UA, messageType);
+        buildAdminPanelPageModel(page, model);
         return "adminpanel_template";
     }
 
-    @GetMapping(value = "/pages/create")
-    public String create(@ModelAttribute("page") Page page) {
+    @GetMapping(value = ADMIN_PREFIX + "/pages/create")
+    public String create(@RequestParam(value = "parentCode", required = false) String parentCode,
+                         @ModelAttribute("page") Page page) {
+
         log.info("Request to get create page");
         return "adminpanel_template";
     }
 
-    @PostMapping(value = "/pages")
+    @PostMapping(value = ADMIN_PREFIX + "/pages")
     public String store(@ModelAttribute("page") Page page) {
         log.info("Request to save page : {}", page);
         pageService.save(page);
-        return "redirect:/pages/index?saved&parentCode=" + page.getParentPage().getCode();
+        return "redirect:/admin/pages?saved=true&parentCode=" + page.getParentPage().getCode();
     }
 
-    @GetMapping(value = "/pages/{pageCode}")
-    public String show(@RequestParam String pageCode, Model model) {
+    @GetMapping(value = ADMIN_PREFIX + "/pages/{pageCode}")
+    public String show(@PathVariable String pageCode, Model model) {
         log.info("Request to show page with code : {}", pageCode);
         return getUaPage(pageCode, model);
     }
 
-    @GetMapping(value = "/pages/{pageCode}/edit")
-    public String edit(@ModelAttribute("page") Page page, @RequestParam String pageCode) {
+    @GetMapping(value = ADMIN_PREFIX + "/pages/{pageCode}/edit")
+    public String edit(@ModelAttribute("page") Page page, @PathVariable String pageCode) {
         log.info("Request to get edit page for code : {}", pageCode);
         return "adminpanel_template";
     }
 
-    @PutMapping(value = "/pages/{pageCode}")
+    @PutMapping(value = ADMIN_PREFIX + "/pages/{pageCode}")
     public String update(@ModelAttribute("page") Page page) {
         log.info("Request to update page : {}", page);
         pageService.update(page);
-        return "redirect:/pages/index?updated&parentCode=" + page.getParentPage().getCode();
+        return "redirect:/admin/pages?updated=true&parentCode=" + page.getParentPage().getCode();
     }
 
-    @DeleteMapping(value = "/pages/{pageCode}")
-    public String destroy(@RequestParam String pageCode) {
+    @DeleteMapping(value = ADMIN_PREFIX + "/pages/{pageCode}")
+    public String destroy(@PathVariable String pageCode) {
         Page page = pageService.findPageByCode(pageCode);
         log.debug("Request to delete page with code : {}", pageCode);
         pageService.delete(page);
-        return "redirect:/pages/index?deleted&parentCode=" + page.getParentPage().getCode();
+        return "redirect:/admin/pages?deleted=true&parentCode=" + page.getParentPage().getCode();
+    }
+
+    private MessageType getMessageType(boolean saved, boolean updated, boolean deleted) {
+        MessageType messageType = null;
+        if (saved) {
+            messageType = MessageType.SAVED;
+        }
+        if (updated) {
+            messageType = MessageType.UPDATED;
+        }
+        if (deleted) {
+            messageType = MessageType.DELETED;
+        }
+        return messageType;
+    }
+
+    private void buildAdminPanelPageModel(AdminPanelPageDto page, Model model) {
+        model.addAttribute("header", page.getHeader());
+        model.addAttribute("content", page.getContent());
+        model.addAttribute("footer", page.getFooter());
     }
 
     @GetMapping(value = "/{pageCode}")

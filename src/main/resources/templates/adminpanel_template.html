@@ -3,13 +3,13 @@
 <head th:replace="fragments::head"></head>
     <body class="bg-light">
         <th:block th:replace="fragments::languages"/>
-        <div class="header container mb-2">
+        <div class="header container-fluid mb-2">
             [(${header})]
         </div>
-        <div class="container my-3">
+        <div class="container-fluid my-3">
             [(${content})]
         </div>
-        <div class="footer container mt-2">
+        <div class="footer container-fluid mt-2">
             [(${footer})]
         </div>
     </body>

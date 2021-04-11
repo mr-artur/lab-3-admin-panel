@@ -93,6 +93,9 @@ public class Page implements Serializable {
     @JoinColumn(name = "alias_of", referencedColumnName = "code")
     private Page aliasOf;
 
+    @OneToMany(mappedBy = "aliasOf", cascade = CascadeType.ALL)
+    private List<Page> aliases = new ArrayList<>();
+
     public String getCode(Language language) {
         return language == Language.UA
                 ? "" + code

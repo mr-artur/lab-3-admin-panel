@@ -46,7 +46,7 @@ p {
     line-height: 1.9rem;
 }
 
-a {
+.custom-a {
     font-size: 1rem;
     text-align: center;
     width: auto;
@@ -70,7 +70,7 @@ a.back-link {
     display: inline-block;
 }
 
-a:hover {
+.custom-a:hover {
     margin-top: 15px;
     color: white;
     background-color: #37966A;
@@ -153,7 +153,7 @@ h2, h5 {
     text-align: center;
 }
 
-.container {
+.container, .container-fluid {
     padding: 50px;
     padding-top: 30px;
     border-radius: 10px;
@@ -178,4 +178,29 @@ h2 {
 .btn-language {
     width: 60px;
     font-size: 20px !important;
+}
+
+@keyframes disappear {
+    0% {
+        opacity: 1;
+    }
+    50%{
+        font-size: 0;
+    }
+    100% {
+        margin-bottom: 0;
+        padding: 0;
+        opacity: 0;
+        height: 0;
+    }
+}
+
+.alert {
+    margin: auto;
+    max-width: 450px;
+    text-align: center;
+    animation-name: disappear;
+    animation-duration: 2s;
+    animation-delay: 2.5s;
+    animation-fill-mode: forwards;
 }
