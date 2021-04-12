@@ -14,6 +14,7 @@ import ua.kpi.fict.cms.repository.PageRepository;
 import ua.kpi.fict.cms.service.PageService;
 import ua.kpi.fict.cms.statics.StaticTextManager;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -167,6 +168,14 @@ public class PageServiceImpl implements PageService {
 
     @Override
     public void save(Page page) {
+        page.setCreationDate(new Date(System.currentTimeMillis()));
+        page.setUpdateDate(new Date(System.currentTimeMillis()));
+        page.setParentPage(findPageByCode(page.getParentPage().getCode()));
+        if (!page.getAliasOf().getCode().isEmpty()) {
+            page.setAliasOf(findPageByCode(page.getAliasOf().getCode()));
+        } else {
+            page.setAliasOf(null);
+        }
         pageRepository.save(page);
     }
 
@@ -418,35 +427,23 @@ public class PageServiceImpl implements PageService {
     @Override
     public AdminPanelPageDto getCreatePage(Language language) {
         String header = buildHeader(language);
-        String content = buildCreatePageContent(language);
         String footer = buildFooter(language);
 
         return AdminPanelPageDto.builder()
                 .header(header)
-                .content(content)
                 .footer(footer)
                 .build();
-    }
-
-    private String buildCreatePageContent(Language language) {
-        return null;
     }
 
     @Override
     public AdminPanelPageDto getEditPage(Language language) {
         String header = buildHeader(language);
-        String content = buildEditPageContent(language);
         String footer = buildFooter(language);
 
         return AdminPanelPageDto.builder()
                 .header(header)
-                .content(content)
                 .footer(footer)
                 .build();
-    }
-
-    private String buildEditPageContent(Language language) {
-        return null;
     }
 
     @Override

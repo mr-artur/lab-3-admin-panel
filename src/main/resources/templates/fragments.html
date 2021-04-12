@@ -17,7 +17,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Monofett&display=swap" rel="stylesheet">
 
     <!-- Additional styles -->
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/styled.css">
 </head>
 
 <!-- Change language block -->
@@ -28,3 +28,10 @@
     <!-- Change language script -->
     <script type="text/javascript" src="/js/languageChange.js"></script>
 </div>
+
+<!-- Label for input in forms | accepts: text -->
+<th:block th:fragment="input-label" xmlns:th="http://www.w3.org/1999/xhtml">
+    <div class="input-group-prepend shadow-sm">
+        <span class="form__element__label input-group-text" th:text="${text}"></span>
+    </div>
+</th:block>

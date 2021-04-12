@@ -32,20 +32,28 @@ public class PageController {
         MessageType messageType = getMessageType(saved, updated, deleted);
         AdminPanelPageDto page = pageService.getIndexPage(parentCode, Language.UA, messageType);
         buildAdminPanelPageModel(page, model);
-        return "adminpanel_template";
+        return "admin/index";
     }
 
     @GetMapping(value = ADMIN_PREFIX + "/pages/create")
     public String create(@RequestParam(value = "parentCode", required = false) String parentCode,
-                         @ModelAttribute("page") Page page) {
+                         @ModelAttribute("page") Page page,
+                         Model model) {
 
         log.info("Request to get create page");
-        return "adminpanel_template";
+        AdminPanelPageDto headerFooter = pageService.getCreatePage(Language.UA);
+        model.addAttribute("parentCode", parentCode);
+        model.addAttribute("header", headerFooter.getHeader());
+        model.addAttribute("footer", headerFooter.getFooter());
+        return "admin/create";
     }
 
     @PostMapping(value = ADMIN_PREFIX + "/pages")
-    public String store(@ModelAttribute("page") Page page) {
+    public String store(@RequestParam(value = "parentCode", required = false) String parentCode,
+                        @ModelAttribute("page") Page page) {
+
         log.info("Request to save page : {}", page);
+        page.setParentPage(Page.builder().code(parentCode).build());
         pageService.save(page);
         return "redirect:/admin/pages?saved=true&parentCode=" + page.getParentPage().getCode();
     }
@@ -57,9 +65,15 @@ public class PageController {
     }
 
     @GetMapping(value = ADMIN_PREFIX + "/pages/{pageCode}/edit")
-    public String edit(@ModelAttribute("page") Page page, @PathVariable String pageCode) {
+    public String edit(@ModelAttribute("page") Page page,
+                       @PathVariable String pageCode,
+                       Model model) {
+
         log.info("Request to get edit page for code : {}", pageCode);
-        return "adminpanel_template";
+        AdminPanelPageDto headerFooter = pageService.getEditPage(Language.UA);
+        model.addAttribute("header", headerFooter.getHeader());
+        model.addAttribute("footer", headerFooter.getFooter());
+        return "admin/edit";
     }
 
     @PutMapping(value = ADMIN_PREFIX + "/pages/{pageCode}")

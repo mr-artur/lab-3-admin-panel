@@ -180,6 +180,38 @@ h2 {
     font-size: 20px !important;
 }
 
+.alert {
+    margin: auto;
+    max-width: 450px;
+    text-align: center;
+    animation-name: disappear;
+    animation-duration: 2s;
+    animation-delay: 2.5s;
+    animation-fill-mode: forwards;
+}
+
+.form {
+    margin: auto;
+}
+
+.form__element {
+    width: 600px;
+}
+
+.form__element__label {
+    display: flex;
+    justify-content: center;
+    width: 150px;
+}
+
+.container-form {
+    max-width: 800px;
+}
+
+.form-extended .form__element__label {
+    width: 200px;
+}
+
 @keyframes disappear {
     0% {
         opacity: 1;
@@ -193,14 +225,4 @@ h2 {
         opacity: 0;
         height: 0;
     }
-}
-
-.alert {
-    margin: auto;
-    max-width: 450px;
-    text-align: center;
-    animation-name: disappear;
-    animation-duration: 2s;
-    animation-delay: 2.5s;
-    animation-fill-mode: forwards;
 }
