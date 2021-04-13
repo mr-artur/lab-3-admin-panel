@@ -2,9 +2,9 @@ const languageButtons = document.getElementsByClassName("btn-language")
 
 const changeLanguage = e => {
     const { target: { value } } = e
-    const { location : { pathname } }  = window
+    const { location : { pathname, search } } = window;
     console.log("" + location + " " + pathname + " " + value)
-    window.location.replace(buildNewLocation(pathname, value))
+    window.location.replace(buildNewLocation(pathname, value) + search)
 }
 
 const buildNewLocation = (pathname, value) => {

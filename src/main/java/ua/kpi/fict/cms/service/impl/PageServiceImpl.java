@@ -170,18 +170,43 @@ public class PageServiceImpl implements PageService {
     public void save(Page page) {
         page.setCreationDate(new Date(System.currentTimeMillis()));
         page.setUpdateDate(new Date(System.currentTimeMillis()));
+        updateDependencies(page);
+        pageRepository.save(page);
+    }
+
+    @Override
+    public void update(Page page) {
+        updateDependencies(page);
+        Page pageToSave = updateOriginalPage(page);
+        pageRepository.save(pageToSave);
+    }
+
+    private void updateDependencies(Page page) {
         page.setParentPage(findPageByCode(page.getParentPage().getCode()));
         if (!page.getAliasOf().getCode().isEmpty()) {
             page.setAliasOf(findPageByCode(page.getAliasOf().getCode()));
         } else {
             page.setAliasOf(null);
         }
-        pageRepository.save(page);
     }
 
-    @Override
-    public void update(Page page) {
-        pageRepository.save(page);
+    private Page updateOriginalPage(Page page) {
+        Page original = findPageByCode(page.getCode());
+        original.setCaptionEn(page.getCaptionEn());
+        original.setCaptionUa(page.getCaptionUa());
+        original.setCode(page.getCode());
+        original.setContainerType(page.getContainerType());
+        original.setContentEn(page.getContentEn());
+        original.setContentUa(page.getContentUa());
+        original.setImageUrl(page.getImageUrl());
+        original.setIntroEn(page.getIntroEn());
+        original.setIntroUa(page.getIntroUa());
+        original.setOrderNum(page.getOrderNum());
+        original.setOrderType(page.getOrderType());
+        original.setAliasOf(page.getAliasOf());
+        original.setParentPage(page.getParentPage());
+        original.setUpdateDate(new Date(System.currentTimeMillis()));
+        return original;
     }
 
     @Override
@@ -208,7 +233,7 @@ public class PageServiceImpl implements PageService {
         String messageBlock = buildMessageBlock(language, messageType);
         builder.append(messageBlock);
 
-        String backButton = buildAdminBackButton(parentCode);
+        String backButton = buildAdminBackButton(parentCode, language);
         builder.append(backButton);
 
         String header = buildIndexPageHeader(parentCode, language);
@@ -223,14 +248,15 @@ public class PageServiceImpl implements PageService {
         return builder.toString();
     }
 
-    private String buildAdminBackButton(String parentCode) {
+    private String buildAdminBackButton(String parentCode, Language language) {
         Page parentPage = findPageByCode(parentCode).getParentPage();
         return parentCode != null && !parentCode.isEmpty()
                 ? String.format("<div class=\"row d-flex justify-content-start mt-4 mb-5 ml-1\">" +
-                        "            <a href=\"/admin/pages?parentCode=%s\">" +
+                        "            <a href=\"%s/admin/pages?parentCode=%s\">" +
                         "               <button class=\"btn btn-primary\">← /%s</button>" +
                         "            </a>" +
                         "        </div>",
+                language == Language.UA ? "" : "/en",
                 parentPage != null ? parentPage.getCode() : "",
                 parentPage != null ? parentPage.getCode() : ""
         )
@@ -240,10 +266,14 @@ public class PageServiceImpl implements PageService {
     private String buildCreateButton(String parentCode, Language language) {
         return parentCode != null
                 ? String.format("<div class=\"row d-flex justify-content-center mt-4\">" +
-                "                    <a href=\"/admin/pages/create?parentCode=%s\">" +
-                "                       <button class=\"btn btn-success\">%s</button>" +
-                "                    </a>" +
-                "                </div>", parentCode, StaticTextManager.getCreateButtonText(language))
+                        "            <a href=\"%s/admin/pages/create?parentCode=%s\">" +
+                        "               <button class=\"btn btn-success\">%s</button>" +
+                        "            </a>" +
+                        "        </div>",
+                language == Language.UA ? "" : "/en",
+                parentCode,
+                StaticTextManager.getCreateButtonText(language)
+        )
                 : "";
     }
 
@@ -301,7 +331,7 @@ public class PageServiceImpl implements PageService {
         builder.append(buildTableCell(
                 page.getChildPages().isEmpty()
                         ? ""
-                        : buildChildrenButton(page.getCode())
+                        : buildChildrenButton(page.getCode(), language)
         ));
         builder.append(buildTableCell(page.getId().toString()));
         builder.append(buildTableCell(ellipsize(emptyIfNull(page.getCaptionEn()), 9)));
@@ -336,29 +366,40 @@ public class PageServiceImpl implements PageService {
         return builder.toString();
     }
 
-    private String buildChildrenButton(String code) {
-        return String.format("<a href=\"/admin/pages?parentCode=%s\">" +
-                "                 <button class=\"btn btn-success\">⟱</button>" +
-                "             </a>", code);
+    private String buildChildrenButton(String code, Language language) {
+        return String.format("<a href=\"%s/admin/pages?parentCode=%s\">" +
+                        "         <button class=\"btn btn-success\">⟱</button>" +
+                        "     </a>",
+                language == Language.UA ? "" : "/en",
+                code);
     }
 
     private String buildShowButton(String code, Language language) {
-        return String.format("<a href=\"/admin/pages/%s\">" +
-                "                 <button class=\"btn btn-primary\">%s</button>" +
-                "             </a>", code, StaticTextManager.getShowButtonText(language));
+        return String.format("<a href=\"%s/admin/pages/%s\">" +
+                        "         <button class=\"btn btn-primary\">%s</button>" +
+                        "     </a>",
+                language == Language.UA ? "" : "/en",
+                code,
+                StaticTextManager.getShowButtonText(language));
     }
 
     private String buildUpdateButton(String code, Language language) {
-        return String.format("<a href=\"/admin/pages/%s/edit\">" +
-                "                 <button class=\"btn btn-warning\">%s</button>" +
-                "             </a>", code, StaticTextManager.getUpdateButtonText(language));
+        return String.format("<a href=\"%s/admin/pages/%s/edit\">" +
+                        "         <button class=\"btn btn-warning\">%s</button>" +
+                        "     </a>",
+                language == Language.UA ? "" : "/en",
+                code,
+                StaticTextManager.getUpdateButtonText(language));
     }
 
     private String buildDeleteButton(String code, Language language) {
-        return String.format("<form action=\"/admin/pages/%s\" method=\"post\">" +
-                "                 <input name=\"_method\" type=\"hidden\" value=\"delete\" />" +
-                "                 <button class=\"btn btn-danger\">%s</button>" +
-                "             </form>", code, StaticTextManager.getDeleteButtonText(language));
+        return String.format("<form action=\"%s/admin/pages/%s\" method=\"post\">" +
+                        "         <input name=\"_method\" type=\"hidden\" value=\"delete\" />" +
+                        "         <button class=\"btn btn-danger\">%s</button>" +
+                        "     </form>",
+                language == Language.UA ? "" : "/en",
+                code,
+                StaticTextManager.getDeleteButtonText(language));
     }
 
     private String buildTableCell(String text) {
