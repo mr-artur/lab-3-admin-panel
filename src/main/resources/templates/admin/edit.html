@@ -8,7 +8,7 @@
         </div>
         <div class="container-fluid my-3">
             <div class="container container-form mt-5">
-                <form action="#" th:action="'/admin/pages/' + ${page.code}" th:object="${page}" th:method="put"
+                <form action="#" th:action="${langPrefix} + '/admin/pages/' + ${page.code}" th:object="${page}" th:method="put"
                       class="form form-extended d-flex flex-column align-items-center p-4 shadow"
                 >
                     <h2 th:text="#{update.label}" class="mb-4"></h2>

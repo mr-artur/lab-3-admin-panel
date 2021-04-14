@@ -8,7 +8,7 @@
         </div>
         <div class="container-fluid my-3">
             <div class="container container-form mt-5">
-                <form action="#" th:action="'/admin/pages?parentCode=' + ${parentCode}" th:object="${page}" method="post"
+                <form action="#" th:action="${langPrefix} + '/admin/pages?parentCode=' + ${parentCode}" th:object="${page}" method="post"
                       class="form form-extended d-flex flex-column align-items-center p-4 shadow"
                 >
                     <h2 th:text="#{create.label}" class="mb-4"></h2>

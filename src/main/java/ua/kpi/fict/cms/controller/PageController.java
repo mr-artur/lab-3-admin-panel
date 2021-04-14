@@ -12,6 +12,8 @@ import ua.kpi.fict.cms.entity.Page;
 import ua.kpi.fict.cms.entity.enums.Language;
 import ua.kpi.fict.cms.service.PageService;
 
+import java.util.Locale;
+
 @RequiredArgsConstructor
 @Log4j2
 @Controller
@@ -169,6 +171,7 @@ public class PageController {
 
         log.info("Request to get create en page");
         createAction(parentCode, model, Language.EN);
+        model.addAttribute("langPrefix", "/" + Language.EN.name().toLowerCase(Locale.ROOT));
         return "admin/create";
     }
 
@@ -193,6 +196,7 @@ public class PageController {
 
         log.info("Request to get edit en page for code : {}", pageCode);
         editAction(pageCode, model, Language.EN);
+        model.addAttribute("langPrefix", "/" + Language.EN.name().toLowerCase(Locale.ROOT));
         return "admin/edit";
     }
 

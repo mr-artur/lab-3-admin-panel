@@ -248,6 +248,31 @@ public class PageServiceImpl implements PageService {
         return builder.toString();
     }
 
+    private String buildMessageBlock(Language language, MessageType messageType) {
+        if (messageType == null) {
+            return "";
+        }
+        switch (messageType) {
+            case SAVED:
+                return String.format(
+                        "<div class=\"alert alert-success mb-4\">%s</div>",
+                        StaticTextManager.getSuccessfulPageCreationText(language)
+                );
+            case UPDATED:
+                return String.format(
+                        "<div class=\"alert alert-success mb-4\">%s</div>",
+                        StaticTextManager.getSuccessfulPageUpdateText(language)
+                );
+            case DELETED:
+                return String.format(
+                        "<div class=\"alert alert-danger mb-4\">%s</div>",
+                        StaticTextManager.getSuccessfulPageDeletionText(language)
+                );
+            default:
+                return "";
+        }
+    }
+
     private String buildAdminBackButton(String parentCode, Language language) {
         Page parentPage = findPageByCode(parentCode).getParentPage();
         return parentCode != null && !parentCode.isEmpty()
@@ -263,18 +288,13 @@ public class PageServiceImpl implements PageService {
                 : "";
     }
 
-    private String buildCreateButton(String parentCode, Language language) {
-        return parentCode != null
-                ? String.format("<div class=\"row d-flex justify-content-center mt-4\">" +
-                        "            <a href=\"%s/admin/pages/create?parentCode=%s\">" +
-                        "               <button class=\"btn btn-success\">%s</button>" +
-                        "            </a>" +
-                        "        </div>",
-                language == Language.UA ? "" : "/en",
-                parentCode,
-                StaticTextManager.getCreateButtonText(language)
-        )
-                : "";
+    private String buildIndexPageHeader(String parentCode, Language language) {
+        String template = "<h2 class=\"mb-4\">%s</h2>";
+        String text = parentCode != null && !parentCode.isEmpty()
+                ? String.format(StaticTextManager.getAdminPanelPageHeaderTemplate(language), parentCode)
+                : StaticTextManager.getAdminPanelRootPageHeader(language);
+
+        return String.format(template, text);
     }
 
     private String buildIndexTable(String parentCode, Language language) {
@@ -290,6 +310,20 @@ public class PageServiceImpl implements PageService {
         builder.append("</table>");
 
         return builder.toString();
+    }
+
+    private String buildCreateButton(String parentCode, Language language) {
+        return parentCode != null
+                ? String.format("<div class=\"row d-flex justify-content-center mt-4\">" +
+                        "            <a href=\"%s/admin/pages/create?parentCode=%s\">" +
+                        "               <button class=\"btn btn-success\">%s</button>" +
+                        "            </a>" +
+                        "        </div>",
+                language == Language.UA ? "" : "/en",
+                parentCode,
+                StaticTextManager.getCreateButtonText(language)
+        )
+                : "";
     }
 
     private String buildIndexTableHeader(Language language) {
@@ -319,6 +353,27 @@ public class PageServiceImpl implements PageService {
         builder.append(buildTableHeaderCell(""));
 
         builder.append("</thead>");
+
+        return builder.toString();
+    }
+
+    private String buildIndexTableBody(String parentCode, Language language) {
+        StringBuilder builder = new StringBuilder();
+
+        builder.append("<tbody>");
+
+        Page parentPage = findPageByCode(parentCode);
+        if (parentPage.getCode() != null) {
+            for (Page page : parentPage.getChildPages()) {
+                String childRow = getChildPageRow(page, language);
+                builder.append(childRow);
+            }
+        } else {
+            Page rootPage = findPageByCode("root");
+            String rootChildRow = getChildPageRow(rootPage, language);
+            builder.append(rootChildRow);
+        }
+        builder.append("</tbody>");
 
         return builder.toString();
     }
@@ -408,61 +463,6 @@ public class PageServiceImpl implements PageService {
 
     private String buildTableHeaderCell(String text) {
         return String.format("<th class=\"text-center\">%s</th>", text);
-    }
-
-    private String buildIndexTableBody(String parentCode, Language language) {
-        StringBuilder builder = new StringBuilder();
-
-        builder.append("<tbody>");
-
-        Page parentPage = findPageByCode(parentCode);
-        if (parentPage.getCode() != null) {
-            for (Page page : parentPage.getChildPages()) {
-                String childRow = getChildPageRow(page, language);
-                builder.append(childRow);
-            }
-        } else {
-            Page rootPage = findPageByCode("root");
-            String rootChildRow = getChildPageRow(rootPage, language);
-            builder.append(rootChildRow);
-        }
-        builder.append("</tbody>");
-
-        return builder.toString();
-    }
-
-    private String buildMessageBlock(Language language, MessageType messageType) {
-        if (messageType == null) {
-            return "";
-        }
-        switch (messageType) {
-            case SAVED:
-                return String.format(
-                        "<div class=\"alert alert-success mb-4\">%s</div>",
-                        StaticTextManager.getSuccessfulPageCreationText(language)
-                );
-            case UPDATED:
-                return String.format(
-                        "<div class=\"alert alert-success mb-4\">%s</div>",
-                        StaticTextManager.getSuccessfulPageUpdateText(language)
-                );
-            case DELETED:
-                return String.format(
-                        "<div class=\"alert alert-danger mb-4\">%s</div>",
-                        StaticTextManager.getSuccessfulPageDeletionText(language)
-                );
-            default:
-                return "";
-        }
-    }
-
-    private String buildIndexPageHeader(String parentCode, Language language) {
-        String template = "<h2 class=\"mb-4\">%s</h2>";
-        String text = parentCode != null && !parentCode.isEmpty()
-                ? String.format(StaticTextManager.getAdminPanelPageHeaderTemplate(language), parentCode)
-                : StaticTextManager.getAdminPanelRootPageHeader(language);
-
-        return String.format(template, text);
     }
 
     @Override
